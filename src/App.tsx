@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
 import { Client, Fenetre, clientSchema, fenetreSchema } from "./types";
 import { validerAvantSoumission } from "./types";
+import ClientForm from "./components/ClientForm";
+import WindowForm from "./components/WindowForm";
+import WindowList from "./components/WindowList";
+import NotesSection from "./components/NotesSection";
 
 export default function App() {
   const [client, setClient] = useState<Client>({
-    nom: "", prenom: "", telephone: "", courriel: "", adresse: "", ville: ""
+    nom: "Jean", prenom: "Dupont", telephone: "5141234567", courriel: "jean@example.com",
+    adresse: "123 rue Principale", ville: "Montréal"
   });
 
   const [fenetre, setFenetre] = useState<Fenetre>({
-    nom: "", fabricant: "", produit: "", tissu: "", couleur: "", largeur: "", largeurFraction: "0/8",
-    hauteur: "", hauteurFraction: "0/8", controle: "", mecanisme: "", moteur: "", poseInterieure: false,
-    poseMurale: false, inverse: false, cassette: "", couleurCassette: "",
+    nom: "Chambre principale", fabricant: "Faber", produit: "Butler", tissu: "Lin", couleur: "Noir", largeur: "25", largeurFraction: "0/8",
+    hauteur: "40", hauteurFraction: "0/8", controle: "Gauche", mecanisme: "Motorisation", moteur: "Somfy RTS", poseInterieure: true,
+    poseMurale: false, inverse: false, cassette: "Fascia 3\"", couleurCassette: "Noir",
     prixListe: 0, coutant: 0, prixVente: 0, quantite: 1
   });
 
@@ -24,7 +29,6 @@ export default function App() {
       ["faber", "solopaque"],
       ["altex", "altex-a"],
       ["altex", "altex-b"]
-      // Ajouter d'autres fabricants/produits ici si nécessaire
     ];
     combinaisons.forEach(([fabricant, produit]) => {
       const cle = `${fabricant}-${produit}`;
@@ -44,6 +48,12 @@ export default function App() {
         });
     });
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(prixParProduit).length > 0) {
+      ajouterFenetre();
+    }
+  }, [prixParProduit]);
 
   const ajouterFenetre = () => {
     const largeur = parseInt(fenetre.largeur);
@@ -85,6 +95,12 @@ export default function App() {
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Lestoriste</h1>
+
+      <ClientForm client={client} setClient={setClient} />
+      <WindowForm fenetre={fenetre} setFenetre={setFenetre} ajouterFenetre={ajouterFenetre} />
+      <WindowList fenetres={fenetres} setFenetres={setFenetres} setFenetre={setFenetre} />
+      <NotesSection />
+
       <button
         onClick={() => validerAvantSoumission(client, fenetres)}
         className="bg-blue-600 text-white px-4 py-2 rounded"
