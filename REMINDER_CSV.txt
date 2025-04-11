@@ -1,0 +1,8 @@
+# 📁 Fichiers CSV requis
+
+Les fichiers suivants doivent être placés dans `public/data/` :
+
+- `prix-faber-butler.csv`
+- `prix-faber-solopaque.csv`
+
+Format attendu : colonnes `Largeur`, `Hauteur`, `Prix`
